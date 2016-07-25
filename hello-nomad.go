@@ -16,17 +16,17 @@ import (
 func main() {
 	log.Println("Starting hello-nomad...")
 
-	httpAddr := os.Getenv("NOMAD_ADDR_http")
-	if httpAddr == "" {
+	httpPort := os.Getenv("NOMAD_PORT_http")
+	if httpPort == "" {
 		log.Fatal("NOMAD_ADDR_http must be set and non-empty")
 	}
-	log.Printf("HTTP service listening on %s", httpAddr)
+	log.Printf("HTTP service listening on port %s", httpPort)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.HelloHandler)
 
 	httpServer := manners.NewServer()
-	httpServer.Addr = httpAddr
+	httpServer.Addr = fmt.Sprintf(":%s", httpPort)
 	httpServer.Handler = handlers.LoggingHandler(mux)
 
 	errChan := make(chan error, 10)
